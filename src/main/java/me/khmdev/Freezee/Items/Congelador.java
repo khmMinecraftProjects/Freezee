@@ -32,7 +32,7 @@ public class Congelador extends CustomItem{
 	@Override
 	public void execute(PlayerInteractEntityEvent event){
 		JugadorFreezee atack=(JugadorFreezee) partida.getJugador(event.getPlayer().getName());
-		if(atack==null||atack.getTipo()!=TipoJugador.Enemigo){
+		if(atack==null||atack.getTipo()!=TipoJugador.Congelador){
 			event.getPlayer().setItemInHand(null);
 			return;
 		}

@@ -1,6 +1,12 @@
 package me.khmdev.Freezee.Game;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CItems;
@@ -19,7 +25,7 @@ import me.khmdev.Freezee.Items.Descongelador;
 public class PartidaFreezee extends PartidaTCT {
 
 	public enum TipoJugador {
-		Enemigo, Congelado, Normal
+		Congelador, Congelado, Normal
 	};
 
 	private int congelados = 0;
@@ -34,35 +40,47 @@ public class PartidaFreezee extends PartidaTCT {
 		CItems.addItem(descongela);
 		CItems.addItem(congela);
 	}
+
 	@Override
 	public void iniControl() {
 		control = new ControlFreezee(this, game);
 	}
+
 	@Override
 	public void iniciada() {
 		congelados = 0;
 		ultimo = System.currentTimeMillis();
-		int i = (int) (Math.random() * jugadores.size() - 0.5);
-
-		for (IJugador j : jugadores.values()) {
-			if (i == 0) {
-				((JugadorFreezee) j).setTipo(TipoJugador.Enemigo);
+		for (int z = 0; z < numCongeladores; z++) {
+			int i = (int) (Math.random() * jugadores.size() - 0.5);
+			for (IJugador j : jugadores.values()) {
+				if (i == 0) {
+					((JugadorFreezee) j).setTipo(TipoJugador.Congelador);
+				}
+				i--;
 			}
-			i--;
 		}
+		numCongeladores=numCongeladoresFinal;
+		
 		super.iniciada();
 
 	}
 
+	private int seconds = 10;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void Equipar(Jugador j) {
-		// super.Equipar(j);
+		j.getPlayer().getInventory().clear();
 
-		if (((JugadorFreezee) j).getTipo() == TipoJugador.Enemigo) {
+		if (((JugadorFreezee) j).getTipo() == TipoJugador.Congelador) {
+			ListenerFreeze.addPlayer(j.getPlayer().getName(), seconds * 1000);
+			j.getPlayer().addPotionEffect(
+
+			new PotionEffect(PotionEffectType.BLINDNESS, seconds * 20, 5));
+
 			j.getPlayer().getInventory().addItem(congela.getItem());
 			j.getPlayer().updateInventory();
-		}else{
+		} else {
 			j.getPlayer().getInventory().addItem(descongela.getItem());
 			j.getPlayer().updateInventory();
 		}
@@ -93,7 +111,6 @@ public class PartidaFreezee extends PartidaTCT {
 
 	}
 
-
 	public void comprobaciones() {
 		if (jugadores.size() == congelados + 1) {
 			GanaEnemigo();
@@ -104,7 +121,7 @@ public class PartidaFreezee extends PartidaTCT {
 
 	private void GanaEnemigo() {
 		for (IJugador j : jugadores.values()) {
-			if (((JugadorFreezee) j).getTipo() == TipoJugador.Enemigo) {
+			if (((JugadorFreezee) j).getTipo() == TipoJugador.Congelador) {
 				((JugadorFreezee) j).setGanador(1);
 			} else {
 				((JugadorFreezee) j).setGanador(0);
@@ -115,7 +132,7 @@ public class PartidaFreezee extends PartidaTCT {
 
 	private void PierdeEnemigo() {
 		for (IJugador j : jugadores.values()) {
-			if (((JugadorFreezee) j).getTipo() == TipoJugador.Enemigo) {
+			if (((JugadorFreezee) j).getTipo() == TipoJugador.Congelador) {
 				((JugadorFreezee) j).setGanador(0);
 			} else {
 				((JugadorFreezee) j).setGanador(1);
@@ -136,7 +153,7 @@ public class PartidaFreezee extends PartidaTCT {
 		super.JugadorAbandona(j);
 		ListenerFreeze.removePlayer(j.getPlayer().getName());
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void congela(Player atacant, Player atacad) {
 		JugadorFreezee atacante = (JugadorFreezee) getJugador(atacant.getName()), atacado = (JugadorFreezee) getJugador(atacad
@@ -149,13 +166,15 @@ public class PartidaFreezee extends PartidaTCT {
 			ultimo = System.currentTimeMillis();
 			atacad.getInventory().remove(descongela.getItem());
 			atacad.updateInventory();
-			atacante.setPuntuacion(atacante.getPuntuacion()+1);
+			atacante.setPuntuacion(atacante.getPuntuacion() + 1);
+			atacado.getPlayer().getInventory().setHelmet(new ItemStack(Material.ICE));
+			
 			return;
 		}
 		atacante.getPlayer().sendMessage(atacado + " ya esta congelado");
 
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void desCongela(Player atacant, Player atacad) {
 		JugadorFreezee atacante = (JugadorFreezee) getJugador(atacant.getName()), atacado = (JugadorFreezee) getJugador(atacad
@@ -167,15 +186,15 @@ public class PartidaFreezee extends PartidaTCT {
 			ListenerFreeze.removePlayer(atacad.getName());
 			atacad.getInventory().addItem(descongela.getItem());
 			atacad.updateInventory();
-			atacante.setPuntuacion(atacante.getPuntuacion()+1);
+			atacante.setPuntuacion(atacante.getPuntuacion() + 1);
+			atacado.getPlayer().getInventory().setHelmet(null);
+
 			return;
 		}
 		atacante.getPlayer().sendMessage(atacado + " no esta congelado");
 
 	}
-	
-	
-	
+
 	protected int calcularCoins(Jugador j) {
 		int coins = 0;
 		Player pl = j.getPlayer();
@@ -196,5 +215,49 @@ public class PartidaFreezee extends PartidaTCT {
 		pl.sendMessage(v + "\\--------------------------------/");
 
 		return coins;
+	}
+
+	public void sendAsToTeam(Jugador j, String message) {
+		TipoJugador t = ((JugadorFreezee) j).getTipo();
+		message = Lang
+				.get("send_selective_team")
+				.replace("%clr%", Variables.get(j.getEquipo()).chat)
+				.replace("%Player%", j.getPlayer().getName())
+				.replace("%msg%",
+						ChatColor.translateAlternateColorCodes('&', message));
+		for (IJugador jj : jugadores.values()) {
+			if (((JugadorFreezee) jj).getTipo() == t) {
+				jj.getPlayer().sendMessage(ChatColor.ITALIC + message);
+			}
+		}
+	}
+	private int numCongeladoresFinal=1;
+	private int numCongeladores=numCongeladoresFinal;
+
+	public boolean setTipo(JugadorFreezee j, TipoJugador equip) {
+		if(j.getTipo()==TipoJugador.Congelador){
+			numCongeladores--;
+		}
+		if(equip==TipoJugador.Congelador){
+			if (numCongeladores!=0) {
+				j.setTipo(equip);
+				numCongeladores--;
+				return true;
+			}else{
+				return false;
+			}
+		}
+		j.setTipo(equip);
+		return true;
+
+	}
+	@Override
+	public void cargaConf(ConfigurationSection section) {
+		if(section.isInt("Congeladores")){
+			numCongeladoresFinal=section.getInt("Congeladores");
+		}else{
+			section.set("Congeladores", numCongeladoresFinal);
+		}
+		super.cargaConf(section);
 	}
 }
