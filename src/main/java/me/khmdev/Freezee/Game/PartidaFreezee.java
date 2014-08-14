@@ -8,9 +8,11 @@ import me.khmdev.APIBase.API;
 import me.khmdev.APIGames.Auxiliar.ConstantesGames.Equipo;
 import me.khmdev.APIGames.Auxiliar.IJugador;
 import me.khmdev.APIGames.Auxiliar.Jugador;
+import me.khmdev.APIGames.Auxiliar.Variables;
 import me.khmdev.APIGames.Games.IGame;
 import me.khmdev.APIGames.Partidas.PartidaTCT;
 import me.khmdev.APIGames.Scores.BoardGames;
+import me.khmdev.APIGames.lang.Lang;
 import me.khmdev.Freezee.Items.Congelador;
 import me.khmdev.Freezee.Items.Descongelador;
 
@@ -32,7 +34,10 @@ public class PartidaFreezee extends PartidaTCT {
 		CItems.addItem(descongela);
 		CItems.addItem(congela);
 	}
-
+	@Override
+	public void iniControl() {
+		control = new ControlFreezee(this, game);
+	}
 	@Override
 	public void iniciada() {
 		congelados = 0;
@@ -144,6 +149,7 @@ public class PartidaFreezee extends PartidaTCT {
 			ultimo = System.currentTimeMillis();
 			atacad.getInventory().remove(descongela.getItem());
 			atacad.updateInventory();
+			atacante.setPuntuacion(atacante.getPuntuacion()+1);
 			return;
 		}
 		atacante.getPlayer().sendMessage(atacado + " ya esta congelado");
@@ -161,9 +167,34 @@ public class PartidaFreezee extends PartidaTCT {
 			ListenerFreeze.removePlayer(atacad.getName());
 			atacad.getInventory().addItem(descongela.getItem());
 			atacad.updateInventory();
+			atacante.setPuntuacion(atacante.getPuntuacion()+1);
 			return;
 		}
 		atacante.getPlayer().sendMessage(atacado + " no esta congelado");
 
+	}
+	
+	
+	
+	protected int calcularCoins(Jugador j) {
+		int coins = 0;
+		Player pl = j.getPlayer();
+		String v = Variables.ChatColorStandar;
+		pl.sendMessage(v + "/--------------------------------\\");
+		pl.sendMessage(v + "Coins por participar:        +5");
+		coins += 5;
+		pl.sendMessage(v + "Coins por punto:       " + (j.getPuntuacion())
+				+ "x3=+" + (j.getPuntuacion() * 3));
+		coins += j.getPuntuacion() * 3;
+
+		if (j.isGanador() == 1) {
+			pl.sendMessage(v + "Coins por ganar:            +10");
+			coins += 10;
+		}
+		j.getPlayer().sendMessage(
+				v + Lang.get("coins_player").replace("%Coins%", "" + coins));
+		pl.sendMessage(v + "\\--------------------------------/");
+
+		return coins;
 	}
 }
