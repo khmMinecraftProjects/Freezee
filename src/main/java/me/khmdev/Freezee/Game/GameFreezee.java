@@ -12,7 +12,8 @@ public class GameFreezee extends Game{
 
 	@Override
 	public void iniListen() {
-		
+		listener = new ListenerFreezee(this);
+		listen();
 	}
 
 	@Override
