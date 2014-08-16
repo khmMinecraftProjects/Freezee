@@ -1,5 +1,6 @@
 package me.khmdev.Freezee.Items;
 
+import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CustomItem;
 import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 import me.khmdev.Freezee.Game.JugadorFreezee;
@@ -32,6 +33,9 @@ public class Descongelador extends CustomItem {
 
 	@Override
 	public void execute(PlayerInteractEntityEvent event) {
+		if (ListenerFreeze.conteinPlayer(event.getPlayer().getName())) {
+			return;
+		}
 		JugadorFreezee atack = (JugadorFreezee) partida.getJugador(event
 				.getPlayer().getName());
 		if (atack == null || atack.getTipo() != TipoJugador.Normal) {

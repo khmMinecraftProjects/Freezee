@@ -19,7 +19,9 @@ public class VentajaSnow extends VentajaInitItem{
 		players.put(jugador.getPlayer().getName(),0);
 	}
 	@SuppressWarnings("deprecation")
+	@Override
 	protected void eq(Player pl){
+
 		double i=0;
 		if(players.containsKey(pl.getName())){
 			i=players.get(pl.getName());
@@ -29,7 +31,7 @@ public class VentajaSnow extends VentajaInitItem{
 		ItemStack it=ItemOri.clone();
 		//it.setAmount(num-i);
 		it.setDurability((short) (it.getType().getMaxDurability()
-				*(1-(i/num))));
+				*((i/num))));
 		
 		pl.getInventory().addItem(it);
 		pl.updateInventory();

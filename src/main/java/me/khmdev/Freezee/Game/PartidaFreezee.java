@@ -1,5 +1,6 @@
 package me.khmdev.Freezee.Game;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,6 +20,7 @@ import me.khmdev.APIGames.Games.IGame;
 import me.khmdev.APIGames.Partidas.PartidaTCT;
 import me.khmdev.APIGames.Scores.BoardGames;
 import me.khmdev.APIGames.lang.Lang;
+import me.khmdev.Freezee.base;
 import me.khmdev.Freezee.Items.Congelador;
 import me.khmdev.Freezee.Items.Descongelador;
 
@@ -39,6 +41,31 @@ public class PartidaFreezee extends PartidaTCT {
 		descongela = new Descongelador(this);
 		CItems.addItem(descongela);
 		CItems.addItem(congela);
+	}
+
+	public void spawnCongelado(final Jugador j,final int t){
+		ListenerFreeze.addPlayer(j.getPlayer().getName(), t*1000);
+		j.getPlayer().getInventory().setHelmet(new ItemStack(Material.ICE));
+
+		Bukkit.getServer().getScheduler()
+		.runTaskLater(base.getInstance(), new Runnable() {
+			
+			@Override
+			public void run() {
+				int e=t*20;
+				if(t<0){
+					e=Integer.MAX_VALUE;
+				}
+				j.getPlayer().addPotionEffect(
+						new PotionEffect(PotionEffectType.BLINDNESS, e, 5));
+			}
+		}, 1);
+	}
+	public void spawnDesCongelado(Jugador j){
+		ListenerFreeze.removePlayer(j.getPlayer().getName());
+		j.getPlayer().removePotionEffect(PotionEffectType.BLINDNESS);
+		j.getPlayer().getInventory().setHelmet(null);
+
 	}
 
 	@Override
@@ -71,14 +98,12 @@ public class PartidaFreezee extends PartidaTCT {
 	@Override
 	public void Equipar(Jugador j) {
 		j.getPlayer().getInventory().clear();
-
 		if (((JugadorFreezee) j).getTipo() == TipoJugador.Congelador) {
-			ListenerFreeze.addPlayer(j.getPlayer().getName(), seconds * 1000);
-			j.getPlayer().addPotionEffect(
-
-			new PotionEffect(PotionEffectType.BLINDNESS, seconds * 20, 5));
-
+			spawnCongelado(j,seconds);
 			j.getPlayer().getInventory().addItem(congela.getItem());
+			j.getPlayer().getInventory().setBoots(new ItemStack(Material.DIAMOND_BOOTS));
+			j.getPlayer().getInventory().setLeggings(new ItemStack(Material.DIAMOND_LEGGINGS));
+			j.getPlayer().getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
 			j.getPlayer().updateInventory();
 		} else {
 			j.getPlayer().getInventory().addItem(descongela.getItem());
@@ -162,20 +187,17 @@ public class PartidaFreezee extends PartidaTCT {
 			atacado.setTipo(TipoJugador.Congelado);
 			congelados++;
 			sendAll(atacante + " a congelado a " + atacado);
-			ListenerFreeze.addPlayer(atacad.getName(), -1);
 			ultimo = System.currentTimeMillis();
-			atacad.getInventory().remove(descongela.getItem());
+			atacado.getPlayer().getInventory().clear();
 			atacad.updateInventory();
+			spawnCongelado(atacado,-1);
 			atacante.setPuntuacion(atacante.getPuntuacion() + 1);
-			atacado.getPlayer().getInventory().setHelmet(new ItemStack(Material.ICE));
-			
 			return;
 		}
 		atacante.getPlayer().sendMessage(atacado + " ya esta congelado");
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public void desCongela(Player atacant, Player atacad) {
 		JugadorFreezee atacante = (JugadorFreezee) getJugador(atacant.getName()), atacado = (JugadorFreezee) getJugador(atacad
 				.getName());
@@ -184,8 +206,9 @@ public class PartidaFreezee extends PartidaTCT {
 			congelados--;
 			sendAll(atacante + " a descongelado a " + atacado);
 			ListenerFreeze.removePlayer(atacad.getName());
-			atacad.getInventory().addItem(descongela.getItem());
-			atacad.updateInventory();
+			spawnDesCongelado(atacado);
+
+			Equipar(atacado);
 			atacante.setPuntuacion(atacante.getPuntuacion() + 1);
 			atacado.getPlayer().getInventory().setHelmet(null);
 
@@ -202,6 +225,13 @@ public class PartidaFreezee extends PartidaTCT {
 		pl.sendMessage(v + "/--------------------------------\\");
 		pl.sendMessage(v + "Coins por participar:        +5");
 		coins += 5;
+		pl.sendMessage(v + "Coins por kill:           " + (j.getKills())
+				+ "x2=+" + (j.getKills() * 2));
+		coins += j.getKills() * 2;
+
+		pl.sendMessage(v + "Coins por muerte:  " + (j.getDeaths()) + "x(-1)=-"
+				+ (j.getDeaths()));
+		coins -= j.getDeaths();
 		pl.sendMessage(v + "Coins por punto:       " + (j.getPuntuacion())
 				+ "x3=+" + (j.getPuntuacion() * 3));
 		coins += j.getPuntuacion() * 3;
@@ -258,6 +288,15 @@ public class PartidaFreezee extends PartidaTCT {
 		}else{
 			section.set("Congeladores", numCongeladoresFinal);
 		}
+		if(section.isInt("TiempoSiguientea")){
+			tiempoLimite=section.getInt("TiempoSiguiente")*1000;
+		}else{
+			section.set("TiempoSiguiente", tiempoLimite/1000);
+		}
 		super.cargaConf(section);
+	}
+
+	public void spawnCongelado(Jugador j) {
+		spawnCongelado(j, seconds);
 	}
 }

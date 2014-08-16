@@ -10,6 +10,6 @@ public class ControlFreezee extends Control {
 
 	public ControlFreezee(Partida p, IGame plu) {
 		super(p, plu);
-		tineOne=0;
+		//tineOne=0;
 	}
 }

@@ -11,11 +11,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.Vector;
 
+import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Effects.ParticleEffect;
 import me.khmdev.APIAuxiliar.Effects.SendParticles;
 import me.khmdev.APIBase.API;
@@ -23,6 +25,7 @@ import me.khmdev.APIGames.Auxiliar.Jugador;
 import me.khmdev.APIGames.Auxiliar.ListenerGames;
 import me.khmdev.APIGames.Auxiliar.ConstantesGames.Estado;
 import me.khmdev.APIGames.Games.IGame;
+import me.khmdev.APIGames.Partidas.PartidaTCT;
 import me.khmdev.Freezee.Game.PartidaFreezee.TipoJugador;
 
 public class ListenerFreezee extends ListenerGames {
@@ -93,6 +96,10 @@ public class ListenerFreezee extends ListenerGames {
 			if (j == null) {
 				return;
 			}
+			if(ListenerFreeze.conteinPlayer(pl.getName())){
+				event.setCancelled(true);
+				return;
+			}
 			if (j.getTipo() == TipoJugador.Congelado) {
 				event.setCancelled(true);
 				return;
@@ -104,14 +111,40 @@ public class ListenerFreezee extends ListenerGames {
 			}
 
 			if (killer == null || !(killer instanceof Player)) {
+				if(j.getTipo()==TipoJugador.Congelador){
+					double health=pl.getHealth()-event.getDamage();
+					health=health<0?0:health;
+					pl.setHealth(health);
+					event.setDamage(0);
+				}
+				System.out.println(event.getDamage());
 
 				// event.setCancelled(true);
 				return;
 
 			}
+			
+			
 			Player dam = (Player) killer;
 			JugadorFreezee damJ = (JugadorFreezee) j.getPartida().getJugador(
 					dam.getName());
+			if(damJ==null) {
+				if(j.getTipo()==TipoJugador.Congelador){
+					double health=pl.getHealth()-event.getDamage();
+					health=health<0?0:health;
+					pl.setHealth(health);
+					event.setDamage(0);
+				}
+				System.out.println(event.getDamage());
+
+				// event.setCancelled(true);
+				return;
+
+			}
+			if(ListenerFreeze.conteinPlayer(dam.getName())){
+				event.setCancelled(true);
+				return;
+			}
 			if (j.getTipo() == TipoJugador.Congelado) {
 				event.setCancelled(true);
 				return;
@@ -120,15 +153,33 @@ public class ListenerFreezee extends ListenerGames {
 				event.setCancelled(true);
 				return;
 			}
+			if(j.getTipo()==TipoJugador.Congelador){
+				double health=pl.getHealth()-event.getDamage();
+				health=health<0?0:health;
+				pl.setHealth(health);
+				event.setDamage(0);
+			}
+			System.out.println(event.getDamage());
 
 		}
 	}
 
 	@Override
 	protected void spawn(Jugador j, PlayerRespawnEvent event) {
-
+		event.setRespawnLocation(((PartidaTCT) j.getPartida()).spawnZone(j));
+		j.getPartida().Equipar(j);
+		if(((JugadorFreezee) j).getTipo()==TipoJugador.Normal){
+			((PartidaFreezee) j.getPartida()).spawnCongelado(j);
+		}else if(((JugadorFreezee) j).getTipo()==TipoJugador.Congelado){
+			((PartidaFreezee) j.getPartida()).spawnCongelado(j,-1);
+		}
 	}
-
+	@EventHandler
+	public void inventoryClick(InventoryClickEvent event) {
+		if(game.containsJugador(event.getWhoClicked().getName())){
+			event.setCancelled(true);
+		}
+	}
 	@Override
 	protected void death(Jugador j, EntityDeathEvent event) {
 

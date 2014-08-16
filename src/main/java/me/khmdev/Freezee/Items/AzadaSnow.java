@@ -6,12 +6,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CustomItem;
 import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 
 public class AzadaSnow extends CustomItem {
 	public AzadaSnow() {
-		super(AuxPlayer.getItem(Material.IRON_HOE, "Lanza bolas"));
+		super(AuxPlayer.getItem(Material.DIAMOND_HOE, "Lanza bolas"));
 	}
 
 	@Override
@@ -22,6 +23,7 @@ public class AzadaSnow extends CustomItem {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(PlayerInteractEvent event) {
+		if(ListenerFreeze.conteinPlayer(event.getPlayer().getName())){return;}
 		event.getPlayer().launchProjectile(Snowball.class);
 		ItemStack it = event.getPlayer().getItemInHand();
 		double n = VentajaSnow.use(event.getPlayer().getName());

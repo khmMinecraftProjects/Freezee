@@ -16,7 +16,10 @@ public class Ventajas {
 		AzadaTNT tnt = new AzadaTNT();
 		CItems.addItem(tnt);
 		ventaja.addVentaja(new VentajaInitItem(tnt.getItem(), 30));
-
+		AzadaSnow sn = new AzadaSnow();
+		CItems.addItem(sn);
+		ventaja.addVentaja(new VentajaSnow(sn.getItem(), 60));
+		
 		ventaja.addVentaja(new VentajaInitItem(
 				new ItemStack(Material.WOOD_SWORD), 5));
 		ventaja.addVentaja(new VentajaInitItem(
@@ -24,8 +27,6 @@ public class Ventajas {
 		ventaja.addVentaja(new VentajaInitItem(
 				new ItemStack(Material.IRON_SWORD), 20));
 		
-		AzadaSnow sn = new AzadaSnow();
-		CItems.addItem(sn);
-		ventaja.addVentaja(new VentajaInitItem(sn.getItem(), 60));
+		
 	}
 }
