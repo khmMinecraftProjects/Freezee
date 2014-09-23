@@ -1,5 +1,8 @@
 package me.khmdev.Freezee.Game;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -152,7 +155,7 @@ public class PartidaFreezee extends PartidaTCT {
 				((JugadorFreezee) j).setGanador(0);
 			}
 		}
-		finalizar();
+		Gofinalizar();
 	}
 
 	private void PierdeEnemigo() {
@@ -163,7 +166,7 @@ public class PartidaFreezee extends PartidaTCT {
 				((JugadorFreezee) j).setGanador(1);
 			}
 		}
-		finalizar();
+		Gofinalizar();
 	}
 
 	private long timeUltimo() {
@@ -251,7 +254,8 @@ public class PartidaFreezee extends PartidaTCT {
 		TipoJugador t = ((JugadorFreezee) j).getTipo();
 		message = Lang
 				.get("send_selective_team")
-				.replace("%clr%", Variables.get(j.getEquipo()).chat)
+				.replace("%clr%", ""+(((JugadorFreezee) j).getTipo()==
+				TipoJugador.Congelador?ChatColor.BLUE:ChatColor.RED))
 				.replace("%Player%", j.getPlayer().getName())
 				.replace("%msg%",
 						ChatColor.translateAlternateColorCodes('&', message));
@@ -261,6 +265,22 @@ public class PartidaFreezee extends PartidaTCT {
 			}
 		}
 	}
+	
+	public void sendAsToAll(Jugador j, String message) {
+		Iterator<Entry<String, IJugador>> jj = jugadores.entrySet().iterator();
+		message = Lang
+				.get("send_selective_all")
+				.replace("%clr%", ""+(((JugadorFreezee) j).getTipo()==
+				TipoJugador.Congelador?ChatColor.BLUE:ChatColor.RED))
+				.replace("%Player%", j.getPlayer().getName())
+				.replace("%msg%",
+						ChatColor.translateAlternateColorCodes('&', message));
+		while (jj.hasNext()) {
+
+			jj.next().getValue().getPlayer().sendMessage(message);
+		}
+	}
+	
 	private int numCongeladoresFinal=1;
 	private int numCongeladores=numCongeladoresFinal;
 

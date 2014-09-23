@@ -21,6 +21,7 @@ import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Effects.ParticleEffect;
 import me.khmdev.APIAuxiliar.Effects.SendParticles;
 import me.khmdev.APIBase.API;
+import me.khmdev.APIGames.Auxiliar.IJugador;
 import me.khmdev.APIGames.Auxiliar.Jugador;
 import me.khmdev.APIGames.Auxiliar.ListenerGames;
 import me.khmdev.APIGames.Auxiliar.ConstantesGames.Estado;
@@ -38,8 +39,14 @@ public class ListenerFreezee extends ListenerGames {
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		Jugador j = game.getJugador(event.getPlayer().getName());
-		if (j == null || j.getPartida().getEstado() != Estado.EnCurso) {
-			event.getRecipients().removeAll(game.getPlayers());
+		if (j == null 
+				|| j.getPartida().getEstado() != Estado.EnCurso) {
+			for (IJugador jj : game.getJugadores()) {
+				if (jj.getPartida().getEstado() == Estado.EnCurso) {
+					System.out.println(jj+" eliminar");
+					event.getRecipients().remove(jj);
+				}
+			}
 			return;
 		} else {
 			event.setCancelled(true);
