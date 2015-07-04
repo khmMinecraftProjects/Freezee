@@ -16,13 +16,14 @@ import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CItems;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CustomItem;
 import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 import me.khmdev.APIBase.Auxiliar.runKill;
+import me.khmdev.Freezee.lang.Lang;
 import me.khmdev.Freezee.base;
 
 public class Azada extends CustomItem {
 	private long timeout = 10000;
 
 	public Azada() {
-		super(AuxPlayer.getItem(Material.IRON_HOE, "Lanza yunques"));
+		super(AuxPlayer.getItem(Material.IRON_HOE, Lang.get("AzadaY.use")));
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class Azada extends CustomItem {
 			return;
 		}
 		if (event.getItem().getDurability() != 0) {
-			event.getPlayer().sendMessage("Aun no se ha recargado el item");
+			event.getPlayer().sendMessage(Lang.get("AzadaTNT.reload"));
 			return;
 		}
 

@@ -43,7 +43,6 @@ public class ListenerFreezee extends ListenerGames {
 				|| j.getPartida().getEstado() != Estado.EnCurso) {
 			for (IJugador jj : game.getJugadores()) {
 				if (jj.getPartida().getEstado() == Estado.EnCurso) {
-					System.out.println(jj+" eliminar");
 					event.getRecipients().remove(jj);
 				}
 			}
@@ -124,9 +123,7 @@ public class ListenerFreezee extends ListenerGames {
 					pl.setHealth(health);
 					event.setDamage(0);
 				}
-				System.out.println(event.getDamage());
 
-				// event.setCancelled(true);
 				return;
 
 			}
@@ -142,7 +139,6 @@ public class ListenerFreezee extends ListenerGames {
 					pl.setHealth(health);
 					event.setDamage(0);
 				}
-				System.out.println(event.getDamage());
 
 				// event.setCancelled(true);
 				return;
@@ -166,7 +162,6 @@ public class ListenerFreezee extends ListenerGames {
 				pl.setHealth(health);
 				event.setDamage(0);
 			}
-			System.out.println(event.getDamage());
 
 		}
 	}

@@ -12,12 +12,13 @@ import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 import me.khmdev.Freezee.Game.JugadorFreezee;
 import me.khmdev.Freezee.Game.PartidaFreezee;
 import me.khmdev.Freezee.Game.PartidaFreezee.TipoJugador;
+import me.khmdev.Freezee.lang.Lang;
 
 public class Congelador extends CustomItem {
 	PartidaFreezee partida;
 
 	public Congelador(PartidaFreezee p) {
-		super(AuxPlayer.getItem(Material.ICE, "Congelar"));
+		super(AuxPlayer.getItem(Material.ICE, Lang.get("Congelador.name")));
 		partida = p;
 	}
 

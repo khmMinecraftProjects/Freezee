@@ -6,6 +6,7 @@ import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 import me.khmdev.Freezee.Game.JugadorFreezee;
 import me.khmdev.Freezee.Game.PartidaFreezee;
 import me.khmdev.Freezee.Game.PartidaFreezee.TipoJugador;
+import me.khmdev.Freezee.lang.Lang;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class Descongelador extends CustomItem {
 	PartidaFreezee partida;
 
 	public Descongelador(PartidaFreezee p) {
-		super(AuxPlayer.getItem(Material.FIRE, "Descongelar"));
+		super(AuxPlayer.getItem(Material.FIRE, Lang.get("Descongelador.name") ));
 		partida = p;
 	}
 

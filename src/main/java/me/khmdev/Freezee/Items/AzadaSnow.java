@@ -9,10 +9,11 @@ import org.bukkit.inventory.ItemStack;
 import me.khmdev.APIAuxiliar.Effects.ListenerFreeze;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CustomItem;
 import me.khmdev.APIAuxiliar.Players.AuxPlayer;
+import me.khmdev.Freezee.lang.Lang;
 
 public class AzadaSnow extends CustomItem {
 	public AzadaSnow() {
-		super(AuxPlayer.getItem(Material.DIAMOND_HOE, "Lanza bolas"));
+		super(AuxPlayer.getItem(Material.DIAMOND_HOE, Lang.get("AzadaSnow.name")));
 	}
 
 	@Override

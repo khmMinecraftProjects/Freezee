@@ -59,7 +59,7 @@ public class BookFreezee extends InitBook {
 				pl.sendMessage(Lang.get("selected_team").replace("%Team%",
 						equip.name()));
 				}else{
-					pl.sendMessage("Ya no puedes ser congelador");
+					pl.sendMessage(Lang.get("setterEquipo.noFreezee"));
 				}
 			} else {
 				pl.sendMessage(Lang.get("no_perms"));

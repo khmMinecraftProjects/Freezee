@@ -2,12 +2,15 @@ package me.khmdev.Freezee;
 
 
 
+import me.khmdev.Freezee.lang.Lang;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class init extends JavaPlugin{
 	public static base base;
 	public void onEnable() {
+		Lang.init(this);
 		if (!hasPluging("APIGames")) {
 			getLogger().severe(
 					getName()

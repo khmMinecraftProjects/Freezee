@@ -13,11 +13,12 @@ import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CItems;
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CustomItem;
 import me.khmdev.APIAuxiliar.Players.AuxPlayer;
 import me.khmdev.APIBase.API;
+import me.khmdev.Freezee.lang.Lang;
 
 public class AzadaTNT extends CustomItem{
 	private long timeout=30000;
 	public AzadaTNT(){
-		super(AuxPlayer.getItem(Material.GOLD_HOE, "Lanza TNT"));
+		super(AuxPlayer.getItem(Material.GOLD_HOE, Lang.get("AzadaTNT.use")));
 	}
 	@Override
 	public void execute(InventoryClickEvent event) {
@@ -29,7 +30,7 @@ public class AzadaTNT extends CustomItem{
 	public void execute(PlayerInteractEvent event) {
 		if(ListenerFreeze.conteinPlayer(event.getPlayer().getName())){return;}
 		if(event.getItem().getDurability()!=0){
-			event.getPlayer().sendMessage("Aun no se ha recargado el item");
+			event.getPlayer().sendMessage(Lang.get("AzadaTNT.reload"));
 			return;
 		}
 		

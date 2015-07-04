@@ -22,7 +22,7 @@ import me.khmdev.APIGames.Auxiliar.Variables;
 import me.khmdev.APIGames.Games.IGame;
 import me.khmdev.APIGames.Partidas.PartidaTCT;
 import me.khmdev.APIGames.Scores.BoardGames;
-import me.khmdev.APIGames.lang.Lang;
+import me.khmdev.Freezee.lang.Lang;
 import me.khmdev.Freezee.base;
 import me.khmdev.Freezee.Items.Congelador;
 import me.khmdev.Freezee.Items.Descongelador;
@@ -189,7 +189,8 @@ public class PartidaFreezee extends PartidaTCT {
 		if (atacado.getTipo() == TipoJugador.Normal) {
 			atacado.setTipo(TipoJugador.Congelado);
 			congelados++;
-			sendAll(atacante + " a congelado a " + atacado);
+			sendAll(Lang.get("partida.freezee").replace("%from%", atacante.toString())
+					.replace("%to%",atacado.toString()));
 			ultimo = System.currentTimeMillis();
 			atacado.getPlayer().getInventory().clear();
 			atacad.updateInventory();
@@ -197,7 +198,7 @@ public class PartidaFreezee extends PartidaTCT {
 			atacante.setPuntuacion(atacante.getPuntuacion() + 1);
 			return;
 		}
-		atacante.getPlayer().sendMessage(atacado + " ya esta congelado");
+		atacante.getPlayer().sendMessage(Lang.get("partida.freezeeYet").replace("%player%",atacado.toString()));
 
 	}
 
@@ -207,7 +208,8 @@ public class PartidaFreezee extends PartidaTCT {
 		if (atacado.getTipo() == TipoJugador.Congelado) {
 			atacado.setTipo(TipoJugador.Normal);
 			congelados--;
-			sendAll(atacante + " a descongelado a " + atacado);
+			sendAll(Lang.get("partida.deFreezee").replace("%from%", atacante.toString())
+					.replace("%to%",atacado.toString()));
 			ListenerFreeze.removePlayer(atacad.getName());
 			spawnDesCongelado(atacado);
 
@@ -217,10 +219,10 @@ public class PartidaFreezee extends PartidaTCT {
 
 			return;
 		}
-		atacante.getPlayer().sendMessage(atacado + " no esta congelado");
+		atacante.getPlayer().sendMessage(Lang.get("partida.noFreezee").replace("%player%",atacado.toString()));
 
 	}
-
+/*
 	protected int calcularCoins(Jugador j) {
 		int coins = 0;
 		Player pl = j.getPlayer();
@@ -249,7 +251,7 @@ public class PartidaFreezee extends PartidaTCT {
 
 		return coins;
 	}
-
+*/
 	public void sendAsToTeam(Jugador j, String message) {
 		TipoJugador t = ((JugadorFreezee) j).getTipo();
 		message = Lang
@@ -308,10 +310,10 @@ public class PartidaFreezee extends PartidaTCT {
 		}else{
 			section.set("Congeladores", numCongeladoresFinal);
 		}
-		if(section.isInt("TiempoSiguientea")){
-			tiempoLimite=section.getInt("TiempoSiguiente")*1000;
+		if(section.isInt("tiempoLimite")){
+			tiempoLimite=section.getInt("tiempoLimite")*1000;
 		}else{
-			section.set("TiempoSiguiente", tiempoLimite/1000);
+			section.set("tiempoLimite", tiempoLimite/1000);
 		}
 		super.cargaConf(section);
 	}

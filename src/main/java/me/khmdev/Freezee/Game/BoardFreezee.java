@@ -10,12 +10,13 @@ import me.khmdev.APIAuxiliar.ScoreBoard.ObjetiveData;
 import me.khmdev.APIAuxiliar.ScoreBoard.getConstant;
 import me.khmdev.APIAuxiliar.ScoreBoard.getStringConst;
 import me.khmdev.APIGames.Scores.BoardGames;
+import me.khmdev.Freezee.lang.Lang;
 
 public class BoardFreezee extends BoardGames {
 
 	public BoardFreezee(final PartidaFreezee partida) {
 		super(partida);
-		add(new ObjetiveData(new getStringConst(ChatColor.LIGHT_PURPLE+"Congelados: "),
+		add(new ObjetiveData(new getStringConst(Lang.get("BoardFreezee.Congelados")),
 				new Functor() {
 					
 					@Override
@@ -23,7 +24,7 @@ public class BoardFreezee extends BoardGames {
 						return partida.getCongelados();
 					}
 				}));
-		add(new ObjetiveData(new getStringConst(ChatColor.RED+"Sin congelar: "),
+		add(new ObjetiveData(new getStringConst(Lang.get("BoardFreezee.SinCongeladar")),
 				new Functor() {
 					
 					@Override
@@ -45,7 +46,7 @@ public class BoardFreezee extends BoardGames {
 	
 		
 		add(new ObjetiveData(null,new getConstant(-4)));
-		add(new ObjetiveData(new getStringConst(ChatColor.GREEN+"Finaliza en:"),
+		add(new ObjetiveData(new getStringConst(Lang.get("BoardFreezee.finish")),
 				new getConstant(-5)));
 		add(new ObjetiveData(new FunctorString() {
 			
